@@ -1,4 +1,4 @@
-
+/*Linear Search */
 package Arrays;
 import java.util.Scanner;
 
@@ -35,7 +35,7 @@ public class LinearSearch {
                 System.out.println("Element found at "+(i+1)+"th position");
                 count++;
             }
-        }
+        }rohansonawane 
         if(count==0){
             System.out.println("Element Not found !!!");
         }
