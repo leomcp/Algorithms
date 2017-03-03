@@ -38,8 +38,6 @@ public class InterQuartileRange {
                 
         //System.out.println("");
                 
-                
-        
         oiqr.display();
         
         double Q1=0.0;
