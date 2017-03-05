@@ -20,7 +20,7 @@ public class CentralLimitTheoremI {
         double sampleMean=nBox*mean;
         double sampleStd=Math.sqrt(nBox)*std;
         
-        System.out.format("%.3f%n", commulativeDistFunc(sampleMean, sampleStd, maxWgt));
+        System.out.format("%.4f", commulativeDistFunc(sampleMean, sampleStd, maxWgt));
     }
     //--------------------------------------------------------------------------
     public static double commulativeDistFunc(double m, double s, double x){
