@@ -92,6 +92,7 @@ Tests are enclosed within conditional, if __name__ == '__main__', so that they c
 source code with the class defination. 
 
 """
+"""
 
 if __name__ == '__main__':
 
@@ -117,7 +118,7 @@ if __name__ == '__main__':
 			wallet[c].make_payment(100)
 			print('New balance = ', wallet[c].get_balance())
 		print()
-
+"""
 
 #------------------------------------------------------------------------------------------------------
 #------------------------------------------------------------------------------------------------------
