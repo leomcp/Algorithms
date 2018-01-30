@@ -96,17 +96,14 @@ class Tree:
     	else:
     		return 1 + max(self._height2(c) for c in self.children(p))
 
-    	def height(self, p = None):
-    		""" Return the height of the subtree rooted at Position p.
+    def height(self, p = None):
+    	""" Return the height of the subtree rooted at Position p.
 
-    		If p is None, return the height of the entire tree
-    		"""
-    		if p is None:
-    			p = self.root()
-    		return self._height2(p)  # start _height2 recursion
+    	If p is None, return the height of the entire tree
+    	"""
+    	if p is None:
+    		p = self.root()
+    	return self._height2(p)  # start _height2 recursion
 	# -------------------------------------------------------------------------------------------------------------
 # -----------------------------------------------------------------------------------------------------------------
 # -----------------------------------------------------------------------------------------------------------------
-
-
-
