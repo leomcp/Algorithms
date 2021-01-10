@@ -6,7 +6,6 @@ class Node:
 		self.left = None
 		self.hd = 0 
 
-
 class BSTree:
 	def __init__(self):
 		self.root  = None 
@@ -22,7 +21,7 @@ class BSTree:
 			return self.root.data
 
 	def insert(self, elem):
-		""" Inserts new element in BST"""
+		""" Inserts new element in Binary Search Tree"""
 		if self.root is None:
 			self.root = Node(elem)
 		else:
@@ -44,14 +43,14 @@ class BSTree:
 			print("Already inserted {}".format(elem))
 
 	def inorder_traversal(self):
-		""" """
+
 		if self.root:
 			print("-"*30)
 			print("Inorder Traversal")
 			print("-"*30)
 			self._inorder_recursive(self.root)
 			print()
-			self._inorder()
+			self._inorder_iterative()
 			print()
 
 	def _inorder_recursive(self, curr_node):
@@ -61,7 +60,7 @@ class BSTree:
 			self._inorder_recursive(curr_node.right)
 
 
-	def _inorder(self):
+	def _inorder_iterative(self):
 		inorder_list = []
 		s = []
 
@@ -92,28 +91,74 @@ class BSTree:
 			print("-"*30)
 			print("Preorder Traversal")
 			print("-"*30)
-			self._preorder(self.root)
+			self._preorder_recursive(self.root)
 			print()
+			self._preorder_iterative()
 
-	def _preorder(self, curr_node):
+	def _preorder_recursive(self, curr_node):
 		if curr_node:
 			print(curr_node.data, end=" ")
-			self._preorder(curr_node.left)
-			self._preorder(curr_node.right)
+			self._preorder_recursive(curr_node.left)
+			self._preorder_recursive(curr_node.right)
+
+	def _preorder_iterative(self):
+		if self.root:
+			preorder_list = []
+
+			s = []
+			s.append(self.root)
+
+			while len(s)>0:
+				pop_node = s[-1]
+				del(s[-1])
+				if pop_node.right is not None:
+					s.append(pop_node.right)
+				if pop_node.left is not None:
+					s.append(pop_node.left)
+				preorder_list.append(pop_node.data)
+
+			if preorder_list:
+				for elem in preorder_list:
+					print(elem, end=" ")
+				print()
 
 	def postorder_traversal(self):
 		if self.root:
 			print("-"*30)
 			print("Postorder Traversal")
 			print("-"*30)
-			self._postorder(self.root)
+			self._postorder_recursive(self.root)
 			print()
+			self._postorder_iterative()
 
-	def _postorder(self, curr_node):
+	def _postorder_recursive(self, curr_node):
 		if curr_node:
-			self._postorder(curr_node.left)
-			self._postorder(curr_node.right)
+			self._postorder_recursive(curr_node.left)
+			self._postorder_recursive(curr_node.right)
 			print(curr_node.data, end=" ")
+
+	def _postorder_iterative(self):
+		if self.root:
+			s_1 = []
+			s_2 = []
+
+			s_1.append(self.root)
+
+			while len(s_1)>0:
+				pop_node = s_1[-1]
+				del(s_1[-1])
+
+				if pop_node.left is not None:
+					s_1.append(pop_node.left)
+				if pop_node.right is not None:
+					s_1.append(pop_node.right)
+
+				s_2.append(pop_node.data)
+
+			if s_2:
+				for idx in range(len(s_2)-1, -1, -1):
+					print(s_2[idx], end=" ")
+				print()
 
 	def levelorder_traversal(self):
 		if self.root:
@@ -168,7 +213,7 @@ class BSTree:
 						self.vrt_map[curr_node.left.hd].append(curr_node.left)
 					else:
 						self.vrt_map[curr_node.left.hd] = [curr_node.left]
-
+					
 				if curr_node.right is not None:
 					q.append(curr_node.right)
 					curr_node.right.hd = curr_node.hd + 1 
@@ -210,6 +255,9 @@ class BSTree:
 					print(curr_node.data, end=" ")
 				print()
 
+	def spiral_order_traversal(self):
+		pass
+
 
 if __name__ == "__main__":
 	bst = BSTree()
@@ -228,10 +276,12 @@ if __name__ == "__main__":
 	bst.levelorder_traversal()
 	bst.verticalorder_traversal()
 	bst.toporder_traversal()
+	bst.spiral_order_traversal()
 
 
 """
 OUTPUT :
+
 5 is inserted .....
 15 is inserted .....
 3 is inserted .....
@@ -240,16 +290,19 @@ OUTPUT :
 18 is inserted .....
 
 ------------------------------
-Inorder Traversal 
+Inorder Traversal
 ------------------------------
+3 5 7 10 12 15 18 
 3 5 7 10 12 15 18 
 ------------------------------
 Preorder Traversal
 ------------------------------
 10 5 3 7 15 12 18 
+10 5 3 7 15 12 18 
 ------------------------------
 Postorder Traversal
 ------------------------------
+3 7 5 12 18 15 10 
 3 7 5 12 18 15 10 
 ------------------------------
 Level Order Traversal
@@ -271,3 +324,5 @@ Top Order Traversal
 3 5 15 18 
 
 """
+
+

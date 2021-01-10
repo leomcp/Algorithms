@@ -12,7 +12,7 @@ class Tree:
 			""" Return the element stored at this position """
 			raise NotImplementedError('must be implemented by subclass')
 
-		def __eq__(sself, other):
+		def __eq__(self, other):
 			""" Return True if other Position represents the same location """
 			raise NotImplementedError('must implemented by subclass')
 
