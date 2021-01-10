@@ -1,4 +1,9 @@
+"""
+Deletion of Node 
+------------------------
 
+
+"""
 class Node:
 
 	def __init__(self, data):
