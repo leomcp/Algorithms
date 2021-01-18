@@ -52,6 +52,10 @@ class BSTree:
 			print(curr_node.data, end=" ")
 			self._inOrder(curr_node.right)
 
+	def printTree(self):
+		if self.root:
+			self.inOrder()
+
 	def find(self, key):
 		if self.root:
 			return self._find(self.root, key)
@@ -71,7 +75,7 @@ class BSTree:
 			print("-"*50)
 			print("Deletion of {}".format(key))
 			self._delete_Node(self.find(key))
-			self.inOrder()
+			self.printTree()
 
 
 	def _delete_Node(self, node):
@@ -137,7 +141,7 @@ if __name__ == "__main__":
 
 	print("Root : {}".format(t.get_Root()))
 
-	t.inOrder()
+	t.printTree()
 
 	t.delete(100)
 
