@@ -51,13 +51,12 @@ class UDGraph:
 
 		q = []
 		q.append(start_v)
+		self.vertices[start_v].visited = True
 
 		while len(q)>0:
-			top_v = q[-1]
-			self.vertices[top_v].visited = True
+			top_v = q.pop()
+			
 			print(top_v, end=" ") 
-
-			del(q[-1])
 
 			for n in self.vertices[top_v].neighbours:
 				if self.vertices[n].visited == False:

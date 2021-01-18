@@ -39,12 +39,10 @@ class UDGraph:
 	def _bfs(self, start_v):
 		q = []
 		q.append(start_v)
+		self.vertices[start_v].visited = True 
 
 		while len(q)>0:
-			head_v = q[0]
-			self.vertices[head_v].visited = True 
-
-			del(q[0])
+			head_v = q.pop(0)
 
 			for n in self.vertices[head_v].neighbours:
 				if self.vertices[n].visited == False:
