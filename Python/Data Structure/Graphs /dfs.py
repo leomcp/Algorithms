@@ -56,7 +56,7 @@ class UDGraph:
 		while len(q)>0:
 			top_v = q.pop()
 			
-			print(top_v, end=" ") 
+			print(top_v) 
 
 			for n in self.vertices[top_v].neighbours:
 				if self.vertices[n].visited == False:
