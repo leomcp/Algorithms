@@ -93,7 +93,7 @@ class BSTree:
 			return n_child 
 
 		def inOrderSuccessor(node):
-			curr_node = node
+			curr_node = node.right
 
 			while curr_node.left is not None:
 				curr_node = curr_node.left 
