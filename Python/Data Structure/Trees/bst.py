@@ -138,6 +138,7 @@ class BSTree:
 
 		q = []
 		q.append(self.root)
+		update_vo(self.root)
 
 		while len(q) > 0:
 
@@ -379,6 +380,27 @@ class BSTree:
 			else:
 				return right
 
+
+	def getMin(self):
+		if self.root:
+			print("-"*50)
+			print("Min : {}".format(self._getMin(self.root)))
+
+	def _getMin(self, curr_node):
+		while curr_node.left is not None:
+			curr_node = curr_node.left
+		return curr_node.data
+
+	def getMax(self):
+		if self.root:
+			print("-"*50)
+			print("Max : {}".format(self._getMax(self.root)))
+
+	def _getMax(self, curr_node):
+		while curr_node.right is not None:
+			curr_node = curr_node.right
+		return curr_node.data
+
 if __name__ == "__main__":
 
 	in_data = [50, 30, 70, 20, 40, 60, 80, 90]
@@ -390,6 +412,9 @@ if __name__ == "__main__":
 	t.getRoot()
 
 	t.height()
+
+	t.getMax()
+	t.getMin()
 
 	t.validate()
 
