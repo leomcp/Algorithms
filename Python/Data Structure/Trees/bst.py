@@ -309,10 +309,13 @@ class BSTree:
 			if parent_n is not None:
 				if parent_n.left == node:
 					parent_n.left = child_n
+					child_n.parent = parent_n
 				else:
 					parent_n.right = child_n
+					child_n.parent = parent_n
 			else:
 				self.root = child_n
+				child_n.parent = None
 
 		if n_child == 2:
 			nxtInOrder_n = getInOrderSucc(node)
