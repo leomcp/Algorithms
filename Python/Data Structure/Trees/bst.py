@@ -1,13 +1,18 @@
 
-import sys
+from __future__ import print_function
+import sys 
 
 class Node:
 
 	def __init__(self, data):
 		self.data = data
+
 		self.left = None
 		self.right = None
 		self.parent = None
+		self.next = None
+		self.prev = None
+
 		self.hd = 0
 
 class BSTree:
@@ -15,12 +20,18 @@ class BSTree:
 	def __init__(self):
 		self.root = None
 
-		self.level_order = []
+		self.level_order = {}
 		self.vertical_order = {}
 
-	def buildTree(self, in_data):
+	def build(self, in_data):
+		print("-"*30)
+		print("Building Tree : ", end="")
 		for key in in_data:
 			self.insert(key)
+		if self.root:
+			print("Complete !")
+			print("{} Nodes inserted".format(len(in_data)))
+			print("Root : {}".format(self.root.data))
 
 	def insert(self, key):
 		if self.root is None:
@@ -42,20 +53,70 @@ class BSTree:
 			else:
 				self._insert(curr_node.left, key)
 		else:
-			print("{} Node is already inserted ....".format(key))
+			print("{} Node already inserted ....".format(key))
 
-	def getRoot(self):
+	def validate(self):
+		print("-"*30)
+		print("Is Tree Valid BST ? : ", end="")
 		if self.root:
-			print("-"*50)
-			self._getRoot()
+			min_v, max_v = -sys.maxsize, sys.maxsize
+			if self._validateBST(self.root, min_v, max_v):
+				print("Valid !")
+			else:
+				print("InValid !")
 
-	def _getRoot(self):
-			print("Root : {}".format(self.root.data))
+	def _validateBST(self, curr_node, min_v, max_v):
+		if curr_node is None:
+			return True
+		if(
+			curr_node.data > min_v and
+			curr_node.data < max_v and
+			self._validateBST(curr_node.left, min_v, curr_node.data) and
+			self._validateBST(curr_node.right, curr_node.data, max_v)
+		):
+			return True
+		else:
+			return False
+
+	def min(self):
+		print("-"*30)
+		print("Min : ", end="")
+		if self.root:
+			print(self._getMin(self.root))
+
+	def _getMin(self, curr_node):
+		while curr_node.left is not None:
+			curr_node = curr_node.left
+		return curr_node.data
+
+	def max(self):
+		print("-"*30)
+		print("Max : ", end="")
+		if self.root:
+			print(self._getMax(self.root))
+
+	def _getMax(self, curr_node):
+		while curr_node.right is not None:
+			curr_node = curr_node.right
+		return curr_node.data
+
+	def height(self):
+		print("-"*30)
+		print("Height : ", end="")
+		if self.root:
+			print(self._height(self.root, 0))
+
+	def _height(self, curr_node, curr_height):
+		if curr_node is None:
+			return curr_height
+		left = self._height(curr_node.left, curr_height + 1)
+		right = self._height(curr_node.right, curr_height + 1)
+		return max(left, right)
 
 	def inOrder(self):
+		print("-"*30)
+		print("InOrder Traversal : ")
 		if self.root:
-			print("-"*50)
-			print("InOrder Traversal")
 			self._inOrder(self.root)
 			print()
 
@@ -66,9 +127,9 @@ class BSTree:
 			self._inOrder(curr_node.right)
 
 	def preOrder(self):
+		print("-"*30)
+		print("PreOrder Traversal : ")
 		if self.root:
-			print("-"*50)
-			print("PreOrder Traversal")
 			self._preOrder(self.root)
 			print()
 
@@ -79,58 +140,57 @@ class BSTree:
 			self._preOrder(curr_node.right)
 
 	def postOrder(self):
+		print("-"*30)
+		print("PostOrder Traversal : ")
 		if self.root:
-			print("-"*50)
-			print("PostOrder Traversal")
 			self._postOrder(self.root)
 			print()
 
 	def _postOrder(self, curr_node):
 		if curr_node:
 			self._postOrder(curr_node.left)
-			self._postOrder(curr_node.right)
+			self._preOrder(curr_node.right)
 			print(curr_node.data, end=" ")
 
 	def levelOrder(self):
+		print("-"*30)
+		print("LevelOrder Traversal : ")
 		if self.root:
-			print("-"*50)
-			print("Level Order Traversal")
 			self._levelOrder()
-			print()
 
 	def _levelOrder(self):
-
 		q = []
 		q.append(self.root)
-		q.append(None)
 
-		while len(q) > 1:
+		lvl = 0
 
-			head_n = q.pop(0)
-
-			if head_n is None:
-				q.append(None)
-				print()
-
-			else:
-				self.level_order.append(head_n.data)
-				print(head_n.data, end=" ")
+		while len(q) > 0:
+			currlvl = []
+			for _ in range(len(q)):
+				head_n = q.pop(0)
+				currlvl.append(head_n.data)
 
 				if head_n.left is not None:
 					q.append(head_n.left)
 				if head_n.right is not None:
 					q.append(head_n.right)
 
+			self.level_order[lvl] = currlvl
+			lvl += 1
+
+		if self.level_order:
+			for lvl in sorted(self.level_order):
+				print("{} --> {}".format(lvl, self.level_order[lvl]))
 
 	def verticalOrder(self):
+		print("-"*30)
+		print("VerticalOrder Traversal : ")
 		if self.root:
-			print("-"*50)
-			print("Vertical Order Traversal")
 			self._verticalOrder()
 
 	def _verticalOrder(self):
 
-		def update_vo(node):
+		def update(node):
 			if node.hd in self.vertical_order:
 				self.vertical_order[node.hd].append(node.data)
 			else:
@@ -138,232 +198,98 @@ class BSTree:
 
 		q = []
 		q.append(self.root)
-		update_vo(self.root)
+
+		self.root.hd = 0
+		update(self.root)
 
 		while len(q) > 0:
-
 			head_n = q.pop(0)
 
 			if head_n.left is not None:
 				q.append(head_n.left)
-
 				head_n.left.hd = head_n.hd - 1
-				update_vo(head_n.left)
+				update(head_n.left)
 
 			if head_n.right is not None:
 				q.append(head_n.right)
-
 				head_n.right.hd = head_n.hd + 1
-				update_vo(head_n.right)
+				update(head_n.right)
 
 		if self.vertical_order:
 			for hd in sorted(self.vertical_order):
 				print("{} --> {}".format(hd, self.vertical_order[hd]))
 
-	def topView(self):
+	def populateNext(self):
+
+		def displayNextLvlWise():
+			q = []
+			q.append(self.root)
+			while len(q) > 0:
+				head_n = q.pop(0)
+				head_n.next = self._getInOrderSucc(head_n)
+				print("{} --> {}".format(head_n.data, head_n.next))
+
+				if head_n.left is not None:
+					q.append(head_n.left)
+				if head_n.right is not None:
+					q.append(head_n.right)
+
+		print("-"*30)
+		print("Populate Next : ")
 		if self.root:
-			print("-"*50)
-			print("Top View")
-			self._topView()
-			print()
+			displayNextLvlWise()
 
-	def _topView(self):
-		if self.level_order is None:
-			self.levelOrder()
-		if self.vertical_order is None:
-			self.verticalOrder()
-
-		for hd in sorted(self.vertical_order):
-			if len(self.vertical_order[hd]) > 1:
-				for node in self.level_order:
-					if node in self.vertical_order[hd]:
-						print(node, end=" ")
-						break
-			else:
-				print(self.vertical_order[hd][0], end=" ")
-
-	def leftView(self):
-		if self.root:
-			print("-"*50)
-			print("Left View")
-			self._leftView()
-			print()
-
-	def _leftView(self):
-		if self.level_order is None:
-			self.levelOrder()
-		if self.vertical_order is None:
-			self.verticalOrder()
-
-		for hd in range(min(self.vertical_order), 1):
-			if len(self.vertical_order[hd]) > 1:
-				for node in self.level_order:
-					if node in self.vertical_order[hd]:
-						print(node, end=" ")
-						break
-			else:
-				print(self.vertical_order[hd][0], end=" ")
-
-	def rightView(self):
-		if self.root:
-			print("-"*50)
-			print("Right View")
-			self._rightView()
-			print()
-
-	def _rightView(self):
-		if self.vertical_order is None:
-			self.verticalOrder()
-		if self.level_order is None:
-			self.levelOrder()
-
-		for hd in range(0, max(self.vertical_order)):
-			if len(self.vertical_order[hd]) > 1:
-				for node in self.level_order:
-					if node in self.vertical_order[hd]:
-						print(node, end=" ")
-						break
-			else:
-				print(self.vertical_order[hd][0], end=" ")
-
-
-	def search(self, key):
-		if self.root:
-			print("-"*50)
-			print("Search {} Node :".format(key), end=" ")
-			if self._searchNode(self.root, key):
-				print("Found !")
-			else:
-				print("Not Found !")
-
-	def _searchNode(self, curr_node, key):
-		if key == curr_node.data:
-			return True
-		elif key > curr_node.data and curr_node.right is not None:
-			return self._searchNode(curr_node.right, key)
-		elif key < curr_node.data and curr_node.left is not None:
-			return self._searchNode(curr_node.left, key)
+	def _getInOrderSucc(self, node):
+		if node.right is not None:
+			return self._getMin(node.right)
 		else:
-			return False
-
-	def find(self, key):
-		return self._findNode(self.root, key)
-
-	def _findNode(self, curr_node, key):
-		if key == curr_node.data:
-			return curr_node
-		elif key > curr_node.data and curr_node.right is not None:
-			return self._findNode(curr_node.right, key)
-		elif key < curr_node.data and curr_node.left is not None:
-			return self._findNode(curr_node.left, key)
-		else:
-			return None
-
-	def delete(self, key):
-		if self.root:
-			print("-"*50)
-			print("Delete {} Node ".format(key))
-			node = self.find(key)
-			if node is not None:
-				self._deleteNode(node)
-			else:
-				print("{} Node does not exists ....".format(key))
-			self._getRoot()
-			self._inOrder(self.root)
-			print()
-
-	def _deleteNode(self, node):
-
-		def nChild(node):
-			n_child = 0
-			if node.left is not None:
-				n_child += 1
-			if node.right is not None:
-				n_child += 1
-			return n_child
-
-		def getInOrderSucc(node):
-			curr_node = node.right
-			while curr_node.left is not None:
-				curr_node = curr_node.left
-			return curr_node
-
-		n_child = nChild(node)
-		parent_n = node.parent
-
-		if n_child == 0:
-			if parent_n is not None:
+			parent_n = node.parent
+			while parent_n is not None:
 				if parent_n.left == node:
-					parent_n.left = None
+					return parent_n.data
 				else:
-					parent_n.right = None
-			else:
-				self.root = None
+					node = parent_n
+					parent_n = parent_n.parent
 
-		if n_child == 1:
-			if node.left is not None:
-				child_n = node.left
-			else:
-				child_n = node.right
+	def populatePrev(self):
 
-			if parent_n is not None:
-				if parent_n.left == node:
-					parent_n.left = child_n
-					child_n.parent = parent_n
+		def displayPrevLvlWise():
+			q = []
+			q.append(self.root)
+
+			while len(q) > 0:
+				head_n = q.pop(0)
+				head_n.prev = self._getInOrderPrev(head_n)
+				print("{} --> {}".format(head_n.data, head_n.prev))
+
+				if head_n.left is not None:
+					q.append(head_n.left)
+				if head_n.right is not None:
+					q.append(head_n.right)
+
+		print("-"*30)
+		print("Populate Prev : ")
+		if self.root:
+			displayPrevLvlWise()
+
+	def _getInOrderPrev(self, node):
+		if node.left is not None:
+			return self._getMax(node.left)
+		else:
+			parent_n = node.parent
+			while parent_n is not None:
+				if parent_n.right == node:
+					return parent_n.data
 				else:
-					parent_n.right = child_n
-					child_n.parent = parent_n
-			else:
-				self.root = child_n
-				child_n.parent = None
+					node = parent_n
+					parent_n = parent_n.parent
 
-		if n_child == 2:
-			nxtInOrder_n = getInOrderSucc(node)
-			node.data = nxtInOrder_n.data
-			self._deleteNode(nxtInOrder_n)
-
-	def height(self):
-		if self.root:
-			print("-"*50)
-			print("Height : {}".format(self._height(self.root, 0)))
-
-	def _height(self, curr_node, curr_height):
-		if curr_node is None:
-			return curr_height
-
-		left_height = self._height(curr_node.left, curr_height +1 )
-		right_height = self._height(curr_node.right, curr_height +1 )
-
-		return max(left_height, right_height)
-
-	def validate(self):
-		print("-"*50)
-		print("Validate : ", end=" ")
-		if self.root:
-			max_v, min_v = sys.maxsize, -sys.maxsize
-			print(self._validateBST(self.root, min_v, max_v))
-		else:
-			print("True")
-			print("Tree is Empty !")
-
-	def _validateBST(self, curr_node, min_v, max_v):
-		if curr_node is None:
-			return True
-
-		if (
-			curr_node.data > min_v and
-			curr_node.data < max_v and
-			self._validateBST(curr_node.left, min_v, curr_node.data) and
-			self._validateBST(curr_node.right, curr_node.data, max_v)
-		):
-			return True
-		else:
-			return False
 
 	def lca(self, p, q):
+		print("-"*30)
+		print("LCA Of {} {} Nodes : ".format(p, q), end="")
 		if self.root:
-			print("-"*50)
-			print("LCA of Nodes {} {} : {}".format(p, q, self._lca(self.root, p, q).data))
+			print(self._lca(self.root, p, q).data)
 
 	def _lca(self, curr_node, p, q):
 		if curr_node is None:
@@ -377,49 +303,127 @@ class BSTree:
 
 		if left is not None and right is not None:
 			return curr_node
+		elif left is not None:
+			return left
 		else:
-			if left is not None:
-				return left
+			return right
+
+	def search(self, key):
+		print("-"*30)
+		print("Search Node {} : ".format(key), end="")
+		if self.root:
+			if self._searchNode(self.root, key):
+				print("Valid !")
 			else:
-				return right
+				print("InValid !")
 
+	def _searchNode(self, curr_node, key):
+		if key == curr_node.data:
+			return True
+		elif key > curr_node.data and curr_node.right is not None:
+			return self._searchNode(curr_node.right, key)
+		elif key < curr_node.data and curr_node.left is not None:
+			return self._searchNode(curr_node.left, key)
+		else:
+			return None
 
-	def getMin(self):
+	def delete(self, key):
+		print("-"*30)
+		print("Delete Node {} : ".format(key))
 		if self.root:
-			print("-"*50)
-			print("Min : {}".format(self._getMin(self.root)))
+			node = self._findNode(self.root, key)
+			if node is not None:
+				self._deleteNode(node)
+			else:
+				print(" {} Node does not exists....".format(key))
+			if self.root:
+				print("InOrder Traversal : ", end="")
+				self._inOrder(self.root)
+				print()
+				print("Root : {}".format(self.root.data))
+				print("Height : {}".format(self._height(self.root, 0)))
 
-	def _getMin(self, curr_node):
-		while curr_node.left is not None:
-			curr_node = curr_node.left
-		return curr_node.data
+	def _findNode(self, curr_node, key):
+		if key == curr_node.data:
+			return curr_node
+		elif key > curr_node.data and curr_node.right is not None:
+			return self._findNode(curr_node.right, key)
+		elif key < curr_node.data and curr_node.left is not None:
+			return self._findNode(curr_node.left, key)
+		else:
+			return None
 
-	def getMax(self):
-		if self.root:
-			print("-"*50)
-			print("Max : {}".format(self._getMax(self.root)))
+	def _deleteNode(self, node):
 
-	def _getMax(self, curr_node):
-		while curr_node.right is not None:
-			curr_node = curr_node.right
-		return curr_node.data
+		def nChild(node):
+			n_child = 0
+			if node.left is not None:
+				n_child += 1
+			if node.right is not None:
+				n_child += 1
+			return n_child 
+
+		def getInOrderSucc(node):
+			curr_node = node.right
+			while curr_node.left is not None:
+				curr_node = curr_node.left
+			return curr_node
+
+		n_child = nChild(node)
+		print(" N Child : {}".format(n_child), end=" ")
+		parent_n = node.parent
+
+		if n_child == 0:
+			if parent_n is not None:
+				print(" Attach : {} --> None".format(parent_n.data))
+				if parent_n.left == node:
+					parent_n.left = None
+				else:
+					parent_n.right = None
+			else:
+				self.root = None
+
+		if n_child == 1:
+			if node.left is not None:
+				child_n = node.left
+			else:
+				child_n = node.right
+			
+			if parent_n is not None:
+				print(" Attach : {} --> {}".format(parent_n.data, child_n.data))
+				if parent_n.left == node:
+					parent_n.left = child_n
+					child_n.parent = parent_n
+				else:
+					parent_n.right = child_n
+					child_n.parent = parent_n
+			else:
+				self.root = child_n
+				self.root.parent = None
+
+		if n_child == 2:
+			next_n = getInOrderSucc(node)
+			print(" InOrder Succ Node : {} (Replace {} : {})".format(next_n.data, node.data, next_n.data))
+			node.data = next_n.data
+			print(" Delete Node {} : ".format(next_n.data))
+			self._deleteNode(next_n)
 
 if __name__ == "__main__":
 
-	in_data = [50, 30, 70, 20, 40, 60, 80, 90]
+	#sys.stdout = open("output.txt", "w")
+
+	in_data = [50, 30, 70, 20, 40, 60, 80, 35, 45, 65, 90]
 
 	t = BSTree()
 
-	t.buildTree(in_data)
-
-	t.getRoot()
-
-	t.height()
-
-	t.getMax()
-	t.getMin()
+	t.build(in_data)
 
 	t.validate()
+
+	t.min()
+	t.max()
+
+	t.height()
 
 	t.inOrder()
 	t.preOrder()
@@ -428,101 +432,152 @@ if __name__ == "__main__":
 	t.levelOrder()
 	t.verticalOrder()
 
-	t.topView()
-	t.leftView()
-	t.rightView()
+	t.populateNext()
+	t.populatePrev()
 
-	t.search(90)
-	t.search(50)
-	t.search(30)
-	t.search(1000)
-
-	t.lca(60, 70)
+	t.lca(80, 90)
 	t.lca(20, 90)
 	t.lca(50, 90)
 
-	t.delete(90)
-	t.delete(40)
-	t.delete(30)
-	t.delete(50)
+	t.search(100)
+	t.search(50)
+	t.search(80)
+	t.search(20)
+	t.search(30)
 
-	print("-"*50)
+	t.delete(100) # NA
+	t.delete(80) # 1 Child 
+	t.delete(90) # 0 Child
+	t.delete(30) # 2 Child
+	t.delete(50) # Root Node
+
+	print("-"*30)
 
 
 """
+BST : 
+
+				50
+	30                      70
+	
+20		40				60		80
+
+	35		45				65		90
+
 
 OUTPUT : 
-
---------------------------------------------------
+------------------------------
+Building Tree : Complete !
+11 Nodes inserted
 Root : 50
---------------------------------------------------
+------------------------------
+Is Tree Valid BST ? : Valid !
+------------------------------
+Min : 20
+------------------------------
+Max : 90
+------------------------------
 Height : 4
---------------------------------------------------
-Validate :  True
---------------------------------------------------
-InOrder Traversal
-20 30 40 50 60 70 80 90 
---------------------------------------------------
-PreOrder Traversal
-50 30 20 40 70 60 80 90 
---------------------------------------------------
-PostOrder Traversal
-20 40 30 60 90 80 70 50 
---------------------------------------------------
-Level Order Traversal
-50 
-30 70 
-20 40 60 80 
-90 
---------------------------------------------------
-Vertical Order Traversal
+------------------------------
+InOrder Traversal : 
+20 30 35 40 45 50 60 65 70 80 90 
+------------------------------
+PreOrder Traversal : 
+50 30 20 40 35 45 70 60 65 80 90 
+------------------------------
+PostOrder Traversal : 
+20 40 35 45 30 70 60 65 80 90 50 
+------------------------------
+LevelOrder Traversal : 
+0 --> [50]
+1 --> [30, 70]
+2 --> [20, 40, 60, 80]
+3 --> [35, 45, 65, 90]
+------------------------------
+VerticalOrder Traversal : 
 -2 --> [20]
--1 --> [30]
-0 --> [40, 60]
-1 --> [70]
+-1 --> [30, 35]
+0 --> [50, 40, 60]
+1 --> [70, 45, 65]
 2 --> [80]
 3 --> [90]
---------------------------------------------------
-Top View
-20 30 40 70 80 90 
---------------------------------------------------
-Left View
-20 30 40 
---------------------------------------------------
-Right View
-40 70 80 
---------------------------------------------------
-Search 90 Node : Found !
---------------------------------------------------
-Search 50 Node : Found !
---------------------------------------------------
-Search 30 Node : Found !
---------------------------------------------------
-Search 1000 Node : Not Found !
---------------------------------------------------
-LCA of Nodes 60 70 : 70
---------------------------------------------------
-LCA of Nodes 20 90 : 50
---------------------------------------------------
-LCA of Nodes 50 90 : 50
---------------------------------------------------
-Delete 90 Node 
+------------------------------
+Populate Next : 
+50 --> 60
+30 --> 35
+70 --> 80
+20 --> 30
+40 --> 45
+60 --> 65
+80 --> 90
+35 --> 40
+45 --> 50
+65 --> 70
+90 --> None
+------------------------------
+Populate Prev : 
+50 --> 45
+30 --> 20
+70 --> 65
+20 --> None
+40 --> 35
+60 --> 50
+80 --> 70
+35 --> 30
+45 --> 40
+65 --> 60
+90 --> 80
+------------------------------
+LCA Of 80 90 Nodes : 80
+------------------------------
+LCA Of 20 90 Nodes : 50
+------------------------------
+LCA Of 50 90 Nodes : 50
+------------------------------
+Search Node 100 : InValid !
+------------------------------
+Search Node 50 : Valid !
+------------------------------
+Search Node 80 : Valid !
+------------------------------
+Search Node 20 : Valid !
+------------------------------
+Search Node 30 : Valid !
+------------------------------
+Delete Node 100 : 
+ 100 Node does not exists....
+InOrder Traversal : 20 30 35 40 45 50 60 65 70 80 90 
 Root : 50
-20 30 40 50 60 70 80 
---------------------------------------------------
-Delete 40 Node 
+Height : 4
+------------------------------
+Delete Node 80 : 
+ N Child : 1  Attach : 70 --> 90
+InOrder Traversal : 20 30 35 40 45 50 60 65 70 90 
 Root : 50
-20 30 50 60 70 80 
---------------------------------------------------
-Delete 30 Node 
+Height : 4
+------------------------------
+Delete Node 90 : 
+ N Child : 0  Attach : 70 --> None
+InOrder Traversal : 20 30 35 40 45 50 60 65 70 
 Root : 50
-20 50 60 70 80 
---------------------------------------------------
-Delete 50 Node 
+Height : 4
+------------------------------
+Delete Node 30 : 
+ N Child : 2  InOrder Succ Node : 35 (Replace 30 : 35)
+ Delete Node 35 : 
+ N Child : 0  Attach : 40 --> None
+InOrder Traversal : 20 35 40 45 50 60 65 70 
+Root : 50
+Height : 4
+------------------------------
+Delete Node 50 : 
+ N Child : 2  InOrder Succ Node : 60 (Replace 50 : 60)
+ Delete Node 60 : 
+ N Child : 1  Attach : 70 --> 65
+InOrder Traversal : 20 35 40 45 60 65 70 
 Root : 60
-20 60 70 80 
---------------------------------------------------
+Height : 4
+------------------------------
+
 """
-
-
 
