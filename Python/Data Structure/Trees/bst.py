@@ -249,7 +249,7 @@ class BSTree:
 					return parent_n.data
 				else:
 					node = parent_n
-					parent_n = parent_n.parent
+					parent_n = node.parent
 
 	def populatePrev(self):
 
@@ -260,7 +260,7 @@ class BSTree:
 			while len(q) > 0:
 				head_n = q.pop(0)
 				head_n.prev = self._getInOrderPrev(head_n)
-				print("{} --> {}".format(head_n.data, head_n.prev))
+				print("{} <-- {}".format(head_n.data, head_n.prev))
 
 				if head_n.left is not None:
 					q.append(head_n.left)
@@ -313,9 +313,9 @@ class BSTree:
 		print("Search Node {} : ".format(key), end="")
 		if self.root:
 			if self._searchNode(self.root, key):
-				print("Valid !")
+				print("Found !")
 			else:
-				print("InValid !")
+				print("Not Found !")
 
 	def _searchNode(self, curr_node, key):
 		if key == curr_node.data:
@@ -403,14 +403,13 @@ class BSTree:
 
 		if n_child == 2:
 			next_n = getInOrderSucc(node)
-			print(" InOrder Succ Node : {} (Replace {} : {})".format(next_n.data, node.data, next_n.data))
+			print(" InOrder Succ Node : {} (Replace {} == {})".format(next_n.data, node.data, next_n.data))
 			node.data = next_n.data
 			print(" Delete Node {} : ".format(next_n.data))
 			self._deleteNode(next_n)
 
-if __name__ == "__main__":
 
-	#sys.stdout = open("output.txt", "w")
+if __name__ == "__main__":
 
 	in_data = [50, 30, 70, 20, 40, 60, 80, 35, 45, 65, 90]
 
@@ -458,14 +457,13 @@ if __name__ == "__main__":
 BST : 
 
 				50
-	30                      70
+	30 					   70
 	
-20		40				60		80
+20 		40				60		80
 
 	35		45				65		90
 
 
-OUTPUT : 
 ------------------------------
 Building Tree : Complete !
 11 Nodes inserted
@@ -516,17 +514,17 @@ Populate Next :
 90 --> None
 ------------------------------
 Populate Prev : 
-50 --> 45
-30 --> 20
-70 --> 65
-20 --> None
-40 --> 35
-60 --> 50
-80 --> 70
-35 --> 30
-45 --> 40
-65 --> 60
-90 --> 80
+50 <-- 45
+30 <-- 20
+70 <-- 65
+20 <-- None
+40 <-- 35
+60 <-- 50
+80 <-- 70
+35 <-- 30
+45 <-- 40
+65 <-- 60
+90 <-- 80
 ------------------------------
 LCA Of 80 90 Nodes : 80
 ------------------------------
@@ -534,15 +532,15 @@ LCA Of 20 90 Nodes : 50
 ------------------------------
 LCA Of 50 90 Nodes : 50
 ------------------------------
-Search Node 100 : InValid !
+Search Node 100 : Not Found !
 ------------------------------
-Search Node 50 : Valid !
+Search Node 50 : Found !
 ------------------------------
-Search Node 80 : Valid !
+Search Node 80 : Found !
 ------------------------------
-Search Node 20 : Valid !
+Search Node 20 : Found !
 ------------------------------
-Search Node 30 : Valid !
+Search Node 30 : Found !
 ------------------------------
 Delete Node 100 : 
  100 Node does not exists....
@@ -563,7 +561,7 @@ Root : 50
 Height : 4
 ------------------------------
 Delete Node 30 : 
- N Child : 2  InOrder Succ Node : 35 (Replace 30 : 35)
+ N Child : 2  InOrder Succ Node : 35 (Replace 30 == 35)
  Delete Node 35 : 
  N Child : 0  Attach : 40 --> None
 InOrder Traversal : 20 35 40 45 50 60 65 70 
@@ -571,7 +569,7 @@ Root : 50
 Height : 4
 ------------------------------
 Delete Node 50 : 
- N Child : 2  InOrder Succ Node : 60 (Replace 50 : 60)
+ N Child : 2  InOrder Succ Node : 60 (Replace 50 == 60)
  Delete Node 60 : 
  N Child : 1  Attach : 70 --> 65
 InOrder Traversal : 20 35 40 45 60 65 70 
@@ -580,4 +578,3 @@ Height : 4
 ------------------------------
 
 """
-
